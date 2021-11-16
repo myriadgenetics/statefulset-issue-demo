@@ -1,0 +1,99 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: statefulset-issue-demo
+  annotations:
+    description: "Deploys a statefulset-issue-demo cluster"
+labels:
+  version: ${version}
+  app: ${project}
+objects:
+
+# Service
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${project}
+    labels:
+      app: ${project}
+      version: ${version}
+  spec:
+    selector:
+      app: ${project}
+    clusterIP: None
+    ports:
+      - name: http
+        protocol: TCP
+        port: 8080
+        targetPort: 8080
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: ${project}
+    labels:
+      app: ${project}
+      version: ${version}
+  spec:
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${project}
+      weight: 100
+    wildcardPolicy: None
+
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    name: ${SERVICE_ACCOUNT}
+
+# statefulset
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: ${project}
+    labels:
+      app: ${project}
+      version: ${version}
+  spec:
+    serviceName: ${project}
+    replicas: 3
+    selector:
+      matchLabels:
+        app: ${project}
+    updateStrategy:
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          app: ${project}
+          version: ${version}
+        labels:
+          app: ${project}
+          version: ${version}
+      spec:
+        serviceAccountName: ${SERVICE_ACCOUNT}
+        terminationGracePeriodSeconds: 30
+        containers:
+        - name: nginx
+          image: ${project}:${version}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+        
+
+parameters:
+- name: environment
+  description: "OpenShift project (current namespace)"
+  required: true
+- name: project
+  description: "Name of the cluster"
+  value: statefulset-issue-demo
+- name: version
+  description: "version to deploy"
+- name: SERVICE_ACCOUNT
+  value: nginx
