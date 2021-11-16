@@ -1,6 +1,6 @@
 # StatefulSet local image resolution issue
 ## Overview
-The goal of this project is to attempt to illustrate the intermittant failure of local image tag referenace resolution in OpenShift 4.8.  The symptom is that when the statefulset is applied and is rolling out the image tag in the statefulset configuration is not reliably translated into the image stream reference already present on the cluster and in the namespace.  This causes OpenShift to attempt to pull the image from docker.io where it does not exist, resulting in an ImagePullBackoff error.
+The goal of this project is to attempt to illustrate the intermittant failure of local image tag reference resolution in OpenShift 4.8.  The symptom is that when the statefulset is applied and is rolling out the image tag in the statefulset configuration is not reliably translated into the image stream reference already present on the cluster and in the namespace.  This causes OpenShift to attempt to pull the image from docker.io where it does not exist, resulting in an ImagePullBackoff error.
 
 ## Steps to reproduce
 
