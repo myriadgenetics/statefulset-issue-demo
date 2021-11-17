@@ -4,7 +4,7 @@ The goal of this project is to attempt to illustrate the intermittant failure of
 
 ## Assumptions
 - Your OpenShift cluster verison is 4.8.17
-- You have OpenShift CLI installed
+- You have the OpenShift CLI installed
 
 ## Steps to reproduce
 
@@ -68,9 +68,7 @@ Scaling the statefulset to 0 replicas and back up also does not seem to work, an
 
 ```
 oc scale sts statefulset-issue-demo --replicas 0
-```
-then
-```
+
 oc scale sts statefulset-issue-demo --replicas 3
 ```
 
@@ -80,7 +78,7 @@ So, without anything else to try, I delete the statefulset and every thing else 
 oc process -p version=1.0.2 -p environment=<namespace>  -f template.yaml | oc delete -f - 
 ```
 
-Now just re-apply it
+Now just re-deploy it
 
 ```
 ./deploy.sh <namespace> 1.0.0 
@@ -88,7 +86,7 @@ Now just re-apply it
 
 This typically works, although sometimes last pod that attempts to start up will fail with the same image pull error.
 
-This is not an acceptable solution because of the statefulness of the applications we are running, which rely on mounted shared volumes to perform leader election. These errors result in an unrecoverable system state that can only be fixed by also removing the shared volumes, which deletes all the persistent data.
+**This is not an acceptable solution because of the statefulness of the applications we are running, which rely on mounted shared volumes to perform leader election. These errors result in an unrecoverable system state that can only be fixed by also removing the shared volumes, which deletes all the persistent data.**
 
 
 ## Cleanup
