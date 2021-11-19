@@ -17,7 +17,7 @@ export OS_REG="$(oc get -n openshift-image-registry route default-route -o=jsonp
 
 Login to the OpenShift registry: 
 ```
-docker login -u <your-user-name> -p $(oc whoami -t) $OS_REG
+docker login -u $(oc whoami) -p $(oc whoami -t) $OS_REG
 ```
 
 Create an a empty image stream in yout project using:

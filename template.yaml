@@ -78,7 +78,7 @@ objects:
         terminationGracePeriodSeconds: 30
         containers:
         - name: nginx
-          image: ${project}:${version}
+          image: image-registry.openshift-image-registry.svc:5000/${environment}/${project}:${version}
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
